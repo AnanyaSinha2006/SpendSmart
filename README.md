@@ -1,15 +1,39 @@
-# neutralinojs-minimal
+# SpendSmart 💸
 
-The default template for a Neutralinojs app. It's possible to use your favorite frontend framework by using [these steps](https://neutralino.js.org/docs/getting-started/using-frontend-libraries).
+AI-powered expense tracker designed for students.
 
-## Contributors
+---
 
-[![Contributors](https://contrib.rocks/image?repo=neutralinojs/neutralinojs-minimal)](https://github.com/neutralinojs/neutralinojs-minimal/graphs/contributors)
+## 🚀 Features
 
-## License
+- Expense tracking
+- Budget planning with emergency reserve
+- Restock reminders
+- Smart spending alerts
+- Upcoming expense prediction
 
-[MIT](LICENSE)
+---
 
-## Icon credits
+## 💡 What makes it unique?
 
-- `trayIcon.png` - Made by [Freepik](https://www.freepik.com) and downloaded from [Flaticon](https://www.flaticon.com)
+SpendSmart doesn't just track expenses —  
+it helps you **plan future spending**.
+
+- Predicts upcoming purchases  
+- Helps prepare money in advance  
+- Prevents overspending  
+
+---
+
+## 🛠 Tech Stack
+
+- HTML
+- CSS
+- JavaScript
+- Neutralino.js
+
+---
+
+## 👩‍💻 Author
+
+Ananya Sinha
