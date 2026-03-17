@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpendSmart — Expense Tracker</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Epilogue:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── Design tokens ───────────────────────────── */
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface2: #f4f4f8;
+      --border: #ebebf0;
+      --text: #111118;
+      --text2: #777790;
+      --accent: #ff5c5c;
+      --accent2: #5c8aff;
+      --accent3: #00c896;
+      --accent4: #ffb800;
+      --grad: linear-gradient(135deg, #ff5c5c 0%, #ff8c42 100%);
+      --grad2: linear-gradient(135deg, #5c8aff 0%, #a855f7 100%);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, .06);
+      --shadow: 0 8px 32px rgba(0, 0, 0, .10);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, .14);
+      --radius: 18px;
+      --radius-sm: 10px;
+      --t: .2s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0e0e14;
+      --surface: #17171f;
+      --surface2: #1f1f2a;
+      --border: #2a2a38;
+      --text: #f0f0f8;
+      --text2: #6666888;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, .3);
+      --shadow: 0 8px 32px rgba(0, 0, 0, .4);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, .5);
+    }
+
+    /* ── Base ────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Epilogue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background var(--t), color var(--t);
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ──────────────────────────────────── */
+    header {
+      background: var(--grad);
+      padding: 36px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .1);
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: 30%;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+
+    .app-name span {
+      opacity: .7;
+      font-weight: 400;
+    }
+
+    .theme-btn {
+      background: rgba(255, 255, 255, .2);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 50px;
+      padding: 7px 14px;
+      color: #fff;
+      font-family: 'Epilogue', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--t);
+    }
+
+    .theme-btn:hover {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    /* ── Balance card ─────────────────────────────── */
+    .balance-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-label {
+      color: rgba(255, 255, 255, .75);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .balance-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .balance-pills {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, .15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .pill.green {
+      background: rgba(0, 200, 150, .25);
+      border-color: rgba(0, 200, 150, .4);
+    }
+
+    .pill.red {
+      background: rgba(255, 80, 80, .25);
+      border-color: rgba(255, 80, 80, .4);
+    }
+
+    /* ── Main content ────────────────────────────── */
+    .main {
+      padding: 0 20px;
+      margin-top: -28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Card ────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      transition: background var(--t), border-color var(--t);
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--text2);
+      margin-bottom: 14px;
+    }
+
+    /* ── Category grid ───────────────────────────── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .cat-btn {
+      background: var(--surface2);
+      border: 2px solid transparent;
+      border-radius: 14px;
+      padding: 12px 4px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-family: 'Epilogue', sans-serif;
+      color: var(--text);
+      font-size: 10px;
+      font-weight: 600;
+      transition: all var(--t);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .cat-btn .icon {
+      font-size: 24px;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .cat-btn.active {
+      border-color: var(--accent);
+      background: #fff0f0;
+      color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(255, 92, 92, .2);
+    }
+
+    [data-theme="dark"] .cat-btn.active {
+      background: #2a1515;
+    }
+
+    /* ── Amount input ────────────────────────────── */
+    .input-group {
+      display: flex;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      transition: border-color var(--t);
+      margin-bottom: 10px;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--accent);
+    }
+
+    .input-prefix {
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text2);
+      background: var(--surface2);
+    }
+
+    .input-group input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 14px 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      outline: none;
+    }
+
+    .input-group input::placeholder {
+      color: var(--border);
+    }
+
+    .add-btn {
+      background: var(--grad);
+      color: #fff;
+      border: none;
+      padding: 0 22px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity var(--t);
+      letter-spacing: .3px;
+    }
+
+    .add-btn:hover {
+      opacity: .88;
+    }
+
+    .add-btn:disabled {
+      opacity: .35;
+      cursor: default;
+    }
+
+    .cat-hint {
+      font-size: 12px;
+      color: var(--text2);
+      text-align: center;
+      min-height: 16px;
+    }
+
+    /* ── Expense list ────────────────────────────── */
+    .expense-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .expense-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      animation: popIn .25s cubic-bezier(.34, 1.56, .64, 1);
+      transition: background var(--t);
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.94) translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .exp-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .exp-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .exp-cat {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .exp-date {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .exp-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .del-btn {
+      background: none;
+      border: none;
+      color: var(--text2);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: color var(--t), background var(--t);
+    }
+
+    .del-btn:hover {
+      color: var(--accent);
+      background: #fff0f0;
+    }
+
+    [data-theme="dark"] .del-btn:hover {
+      background: #2a1515;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 0;
+      color: var(--text2);
+    }
+
+    .empty-state .e-icon {
+      font-size: 42px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* ── Category colors ─────────────────────────── */
+    .c-food {
+      background: #fff0e6;
+    }
+
+    .c-food-t {
+      color: #ff8c42;
+    }
+
+    .c-travel {
+      background: #e6f0ff;
+    }
+
+    .c-travel-t {
+      color: #5c8aff;
+    }
+
+    .c-grocery {
+      background: #e6fff5;
+    }
+
+    .c-grocery-t {
+      color: #00c896;
+    }
+
+    .c-fun {
+      background: #f5e6ff;
+    }
+
+    .c-fun-t {
+      color: #a855f7;
+    }
+
+    .c-health {
+      background: #ffe6e6;
+    }
+
+    .c-health-t {
+      color: #ff5c5c;
+    }
+
+    .c-bills {
+      background: #fffbe6;
+    }
+
+    .c-bills-t {
+      color: #ffb800;
+    }
+
+    .c-shopping {
+      background: #ffe6f5;
+    }
+
+    .c-shopping-t {
+      color: #ff5ca8;
+    }
+
+    .c-other {
+      background: #f0f0f0;
+    }
+
+    .c-other-t {
+      color: #888;
+    }
+
+    [data-theme="dark"] .c-food {
+      background: #2a1a0a;
+    }
+
+    [data-theme="dark"] .c-travel {
+      background: #0a1a2a;
+    }
+
+    [data-theme="dark"] .c-grocery {
+      background: #0a2a1a;
+    }
+
+    [data-theme="dark"] .c-fun {
+      background: #1a0a2a;
+    }
+
+    [data-theme="dark"] .c-health {
+      background: #2a0a0a;
+    }
+
+    [data-theme="dark"] .c-bills {
+      background: #2a200a;
+    }
+
+    [data-theme="dark"] .c-shopping {
+      background: #2a0a1a;
+    }
+
+    [data-theme="dark"] .c-other {
+      background: #1a1a1a;
+    }
+
+    /* ── Toast ───────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 50px;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Epilogue', sans-serif;
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .empty-forecast {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .budget-result {
+      margin-top: 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .budget-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .budget-row b {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      color: var(--accent3);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <div class="app-name">Spend<span>Smart</span></div>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
+    <div class="balance-wrap">
+      <div class="balance-label">Total Spent This Month</div>
+      <div class="balance-amount" id="totalDisplay">₹0</div>
+      <div class="balance-pills">
+        <div class="pill" id="countPill">0 expenses</div>
+        <div class="pill green" id="topCatPill">No data yet</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Add expense card -->
+    <div class="card">
+      <div class="card-title">Add Expense</div>
+
+      <div class="cat-grid">
+        <button class="cat-btn" data-cat="Food" data-color="food" onclick="selectCat(this)">
+          <span class="icon">🍱</span>Food
+        </button>
+        <button class="cat-btn" data-cat="Travel" data-color="travel" onclick="selectCat(this)">
+          <span class="icon">🚌</span>Travel
+        </button>
+        <button class="cat-btn" data-cat="Grocery" data-color="grocery" onclick="selectCat(this)">
+          <span class="icon">🛒</span>Grocery
+        </button>
+        <button class="cat-btn" data-cat="Fun" data-color="fun" onclick="selectCat(this)">
+          <span class="icon">🎮</span>Fun
+        </button>
+        <button class="cat-btn" data-cat="Health" data-color="health" onclick="selectCat(this)">
+          <span class="icon">💊</span>Health
+        </button>
+        <button class="cat-btn" data-cat="Bills" data-color="bills" onclick="selectCat(this)">
+          <span class="icon">⚡</span>Bills
+        </button>
+        <button class="cat-btn" data-cat="Shopping" data-color="shopping" onclick="selectCat(this)">
+          <span class="icon">🛍️</span>Shopping
+        </button>
+        <button class="cat-btn" data-cat="Other" data-color="other" onclick="selectCat(this)">
+          <span class="icon">📦</span>Other
+        </button>
+      </div>
+
+      <div class="input-group">
+        <span class="input-prefix">₹</span>
+        <input type="number" id="amountInput" placeholder="0" min="0"
+          onkeydown="if(event.key==='Enter') addExpense()" />
+        <button class="add-btn" id="addBtn" onclick="addExpense()">ADD</button>
+      </div>
+      <div class="cat-hint" id="catHint">← Pick a category first</div>
+    </div>
+
+    <!-- Budget Planner Card -->
+    <div class="card">
+      <div class="card-title">Budget Planner</div>
+      <div class="input-group">
+        <span class="input-prefix">₹</span>
+        <input type="number" id="incomeInput" placeholder="Monthly income" min="0" />
+      </div>
+
+      <div class="input-group" style="margin-top: 10px;">
+        <span class="input-prefix">₹</span>
+        <input type="number" id="reserveInput" placeholder="Emergency reserve" min="0" />
+      </div>
+
+      <button class="add-btn" onclick="saveBudget()"
+        style="margin-top: 12px; width: 100%; padding: 14px; border-radius: 10px;">
+        Save Budget
+      </button>
+      <div class="budget-result">
+        <div class="budget-row">
+          <span>Usable Budget</span>
+          <b id="usableBudget">₹0</b>
+        </div>
+        <div class="budget-row">
+          <span>Remaining Balance</span>
+          <b id="remainingBudget">₹0</b>
+        </div>
+        <div class="budget-row">
+          <span>Emergency Reserve</span>
+          <b id="reserveDisplay">₹0</b>
+        </div>
+      </div>
+    </div>
+    <!-- Restock Planner Card -->
+    <div class="card">
+      <div class="card-title">Restock Planner</div>
+
+      <div class="input-group">
+        <input type="text" id="itemName" placeholder="Item name (Milk, Shampoo)" />
+      </div>
+
+      <div class="input-group" style="margin-top: 10px;">
+        <span class="input-prefix">₹</span>
+        <input type="number" id="itemCost" placeholder="Cost" min="0" />
+      </div>
+
+      <div class="input-group" style="margin-top: 10px;">
+        <input type="number" id="itemDays" placeholder="Restock every X days" min="1" />
+      </div>
+
+      <button class="add-btn" onclick="addRestock()"
+        style="margin-top: 12px; width: 100%; padding: 14px; border-radius: 10px;">
+        Add Item
+      </button>
+
+      <div id="restockList" style="margin-top: 14px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Upcoming Spending</div>
+      <div id="forecastList"></div>
+    </div>
+    <!-- Expense history card -->
+    <div class="card">
+      <div class="card-title">Expenses</div>
+      <div class="expense-list" id="expenseList"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── State ──────────────────────────────────── */
+    let expenses = JSON.parse(localStorage.getItem('ss_expenses')) || [];
+    let selectedCat = null;
+    let selectedColor = null;
+    let income = parseFloat(localStorage.getItem('ss_income')) || 0;
+    let reserve = parseFloat(localStorage.getItem('ss_reserve')) || 0;
+    let restocks = JSON.parse(localStorage.getItem('ss_restocks')) || [];
+
+    const catIcons = {
+      Food: '🍱', Travel: '🚌', Grocery: '🛒', Fun: '🎮',
+      Health: '💊', Bills: '⚡', Shopping: '🛍️', Other: '📦'
+    };
+
+    /* ── Boot ───────────────────────────────────── */
+    window.onload = () => {
+      const t = localStorage.getItem('ss_theme') || 'light';
+      applyTheme(t);
+      renderAll();
+      renderBudget();
+      renderRestocks();
+      renderForecast();
+      showPredictions();
+    };
+
+    /* ── Theme ──────────────────────────────────── */
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('ss_theme', t);
+      document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+    }
+
+    /* ── Category select ────────────────────────── */
+    function selectCat(el) {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      selectedCat = el.dataset.cat;
+      selectedColor = el.dataset.color;
+      document.getElementById('catHint').textContent = selectedCat + ' selected — type amount & hit ADD';
+      document.getElementById('amountInput').focus();
+    }
+
+    /* ── Add expense ────────────────────────────── */
+    function addExpense() {
+      if (!selectedCat) { showToast('👆 Pick a category first'); return; }
+      const amount = parseFloat(document.getElementById('amountInput').value);
+      if (!amount || amount <= 0) { showToast('Enter a valid amount'); return; }
+
+      const exp = {
+        id: Date.now(),
+        cat: selectedCat,
+        color: selectedColor,
+        icon: catIcons[selectedCat],
+        amount,
+        date: new Date().toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'short',
+          hour: '2-digit', minute: '2-digit'
+        }),
+        timestamp: Date.now()
+
+      };
+
+      expenses.unshift(exp);
+      const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
+      const usable = income - reserve;
+
+      if (totalSpent > usable) {
+        showToast('⚠️ You exceeded your safe spending limit!');
+      } else if (totalSpent > usable * 0.9) {
+        showToast('⚠️ Careful! You are almost out of your monthly budget.');
+      }
+      save();
+      renderHeader();
+      renderList();
+      renderBudget();
+      if (window.Neutralino) {
+        Neutralino.os.showNotification(
+          "SpendSmart",
+          "Expense added successfully!"
+        );
+      }
+
+
+      // reset form
+      document.getElementById('amountInput').value = '';
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      selectedCat = null; selectedColor = null;
+      document.getElementById('catHint').textContent = '← Pick a category first';
+
+      renderAll();
+      showToast('₹' + amount + ' added ✓');
+    }
+
+    /* ── Delete ─────────────────────────────────── */
+    function deleteExpense(id) {
+      expenses = expenses.filter(e => e.id !== id);
+      save();
+      renderAll();
+      showToast('Removed');
+    }
+
+    /* ── Render ─────────────────────────────────── */
+    function renderAll() {
+      renderHeader();
+      renderList();
+    }
+
+    function renderHeader() {
+      const total = expenses.reduce((s, e) => s + e.amount, 0);
+      document.getElementById('totalDisplay').textContent = '₹' + total.toLocaleString('en-IN');
+      document.getElementById('countPill').textContent = expenses.length + ' expense' + (expenses.length !== 1 ? 's' : '');
+
+      // top category
+      if (expenses.length > 0) {
+        const catTotals = {};
+        expenses.forEach(e => catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amount);
+        const top = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+        document.getElementById('topCatPill').textContent = '🏆 ' + top[0];
+      } else {
+        document.getElementById('topCatPill').textContent = 'No data yet';
+      }
+    }
+
+    function renderList() {
+      const list = document.getElementById('expenseList');
+      if (expenses.length === 0) {
+        list.innerHTML = `
+        <div class="empty-state">
+          <span class="e-icon">💸</span>
+          <p>No expenses yet.<br>Pick a category and add one!</p>
+        </div>`;
+        return;
+      }
+      list.innerHTML = expenses.map(e => `
+      <div class="expense-item">
+        <div class="exp-icon c-${e.color}">${e.icon}</div>
+        <div class="exp-info">
+          <div class="exp-cat">${e.cat}</div>
+          <div class="exp-date">${e.date}</div>
+        </div>
+        <div class="exp-amount">−₹${e.amount.toLocaleString('en-IN')}</div>
+        <button class="del-btn" onclick="deleteExpense(${e.id})" title="Delete">✕</button>
+      </div>
+    `).join('');
+    }
+
+    /* ── Persist ────────────────────────────────── */
+    function save() {
+      localStorage.setItem('ss_expenses', JSON.stringify(expenses));
+    }
+
+    /* ── Toast ──────────────────────────────────── */
+    function saveBudget() {
+      income = parseFloat(document.getElementById('incomeInput').value) || 0;
+      reserve = parseFloat(document.getElementById('reserveInput').value) || 0;
+
+      if (income <= 0) {
+        showToast('Enter your monthly income');
+        return;
+      }
+
+      if (reserve >= income) {
+        showToast('Reserve cannot be greater than income');
+        return;
+      }
+
+      localStorage.setItem('ss_income', income);
+      localStorage.setItem('ss_reserve', reserve);
+
+      renderBudget();
+      showToast('Budget saved ✓');
+    }
+    function renderBudget() {
+      const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
+      const usable = income - reserve;
+      const remaining = Math.max(0, usable - totalSpent);
+
+      document.getElementById('usableBudget').textContent = '₹' + usable.toLocaleString('en-IN');
+      document.getElementById('remainingBudget').textContent = '₹' + remaining.toLocaleString('en-IN');
+      document.getElementById('reserveDisplay').textContent = '₹' + reserve.toLocaleString('en-IN');
+    }
+    function detectPatterns() {
+      const grouped = {};
+
+      expenses.forEach(e => {
+        if (!grouped[e.cat]) {
+          grouped[e.cat] = [];
+        }
+        grouped[e.cat].push(e.timestamp);
+      });
+
+      const predictions = [];
+
+      for (const cat in grouped) {
+        const times = grouped[cat];
+        if (times.length < 3) continue;
+
+        times.sort();
+
+        const gaps = [];
+        for (let i = 1; i < times.length; i++) {
+          gaps.push(times[i] - times[i - 1]);
+        }
+
+        const avgGap = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+        const lastPurchase = times[times.length - 1];
+        const nextExpected = lastPurchase + avgGap;
+        const daysLeft = Math.ceil((nextExpected - Date.now()) / 86400000);
+
+        predictions.push({ cat, daysLeft });
+      }
+
+      return predictions;
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+    function addRestock() {
+
+      const name = document.getElementById("itemName").value;
+      const cost = parseFloat(document.getElementById("itemCost").value);
+      const days = parseInt(document.getElementById("itemDays").value);
+
+      if (!name || !cost || !days) {
+        showToast("Fill all fields");
+        return;
+      }
+
+      const item = {
+        id: Date.now(),
+        name,
+        cost,
+        days,
+        last: Date.now()
+      };
+
+      restocks.push(item);
+
+      localStorage.setItem("ss_restocks", JSON.stringify(restocks));
+
+      renderRestocks();
+      renderForecast();
+
+      showToast("Restock item added");
+
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemCost").value = "";
+      document.getElementById("itemDays").value = "";
+    }
+    function renderRestocks() {
+
+      const list = document.getElementById("restockList");
+
+      if (restocks.length === 0) {
+        list.innerHTML = "<p style='font-size:13px;color:var(--text2)'>No restock items yet</p>";
+        return;
+      }
+
+      list.innerHTML = restocks.map(i => {
+
+        const next = i.last + (i.days * 86400000);
+
+        const remainingDays = Math.ceil((next - Date.now()) / 86400000);
+
+        return `
+      <div class="expense-item">
+        <div class="exp-info">
+          <div class="exp-cat">${i.name}</div>
+          <div class="exp-date">Restock in ${remainingDays} days</div>
+        </div>
+        <div class="exp-amount">₹${i.cost}</div>
+      </div>
+    `;
+      }).join("");
+
+    }
+    function showPredictions() {
+      const predictions = detectPatterns();
+
+      predictions.forEach(p => {
+        if (p.daysLeft <= 1) {
+          showToast(`⚠️ ${p.cat} might run out soon`);
+        }
+      });
+    }
+    function renderForecast() {
+      const container = document.getElementById('forecastList');
+      let items = restocks.map(i => {
+
+        const next = i.last + (i.days * 86400000);
+        const daysLeft = Math.ceil((next - Date.now()) / 86400000);
+
+        return {
+          name: i.name,
+          cost: i.cost,
+          days: daysLeft
+        };
+
+      }).filter(i => i.days >= 0 && i.days <= 7);
+
+      const total = items.reduce((sum, i) => sum + i.cost, 0);
+
+      container.innerHTML = `
+  ${items.map(i => {
+
+        const label = i.days === 0 ? "today" : `in ${i.days} days`;
+
+        return `
+      <div class="expense-item">
+        <div class="exp-info">
+          <div class="exp-cat">${i.name}</div>
+          <div class="exp-date">Expected ${label}</div>
+        </div>
+        <div class="exp-amount">₹${i.cost}</div>
+      </div>
+    `;
+
+      }).join("")}
+
+  <div class="budget-result">
+    <div class="budget-row">
+      <span>Total upcoming</span>
+      <b>₹${total}</b>
+    </div>
+  </div>
+`;
+    }
+  </script>
+</body>
+
+</html>
