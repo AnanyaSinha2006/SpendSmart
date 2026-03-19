@@ -34,6 +34,16 @@ it helps you **plan future spending**.
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="resources/assets/screenshots/dashboard.png" width="250"/>
+  <img src="resources/assets/screenshots/budget-planner.png" width="250"/>
+  <img src="resources/assets/screenshots/restock-planner.png" width="250"/>
+  <img src="resources/assets/screenshots/insights-forecast.png" width="250"/>
+  <img src="resources/assets/screenshots/dark-mode.png" width="250"/>
+</p>
+
 ## 👩‍💻 Author
 
 Ananya Sinha
