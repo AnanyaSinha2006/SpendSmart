@@ -706,6 +706,11 @@
       <div class="card-title">Upcoming Spending</div>
       <div id="forecastList"></div>
     </div>
+    <div class="card">
+      <div class="card-title">Smart Insights</div>
+      <div id="insightsList" style="font-size:13px; color:var(--text2); display:flex; flex-direction:column; gap:8px;">
+      </div>
+    </div>
     <!-- Expense history card -->
     <div class="card">
       <div class="card-title">Expenses</div>
@@ -825,6 +830,7 @@
     function renderAll() {
       renderHeader();
       renderList();
+      renderInsights(); // ADD THIS LINE
     }
 
     function renderHeader() {
@@ -933,6 +939,54 @@
       }
 
       return predictions;
+    }
+    function generateInsights() {
+      if (expenses.length === 0) {
+        return ['Start adding expenses to see insights'];
+      }
+
+      const insights = [];
+      const total = expenses.reduce((s, e) => s + e.amount, 0);
+      const catTotals = {};
+
+      expenses.forEach(e => {
+        catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amount;
+      });
+
+      const sorted = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+      const topCat = sorted[0];
+      const topPct = Math.round((topCat[1] / total) * 100);
+
+      insights.push(`📊 Most spending on ${topCat[0]} (${topPct}%)`);
+
+      if (topCat[1] > total * 0.4) {
+        insights.push(`⚠️ ${topCat[0]} is taking up a large chunk of your budget`);
+      }
+
+      if (expenses.length >= 5) {
+        const recent = expenses.slice(0, 5);
+        const gaps = [];
+
+        for (let i = 1; i < recent.length; i++) {
+          gaps.push(recent[i - 1].timestamp - recent[i].timestamp);
+        }
+
+        const avgDays = gaps.reduce((a, b) => a + b, 0) / gaps.length / 86400000;
+
+        if (avgDays < 2) {
+          insights.push('🛒 Your spending frequency is quite high lately');
+        }
+      }
+
+      return insights;
+    }
+    function renderInsights() {
+      const container = document.getElementById('insightsList');
+      const insights = generateInsights();
+
+      container.innerHTML = insights
+        .map(i => `<div class="insight-item">${i}</div>`)
+        .join('');
     }
     function showToast(msg) {
       const t = document.getElementById('toast');
