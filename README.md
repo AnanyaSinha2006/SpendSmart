@@ -1,36 +1,16 @@
 # SpendSmart 💸
 
-AI-powered expense tracker designed for students.
+An intelligent, privacy-first expense tracker that analyzes your spending behavior without any backend or APIs.
 
 ---
 
 ## 🚀 Features
 
-- Expense tracking
-- Budget planning with emergency reserve
-- Restock reminders
-- Smart spending alerts
-- Upcoming expense prediction
-
----
-
-## 💡 What makes it unique?
-
-SpendSmart doesn't just track expenses —  
-it helps you **plan future spending**.
-
-- Predicts upcoming purchases  
-- Helps prepare money in advance  
-- Prevents overspending  
-
----
-
-## 🛠 Tech Stack
-
-- HTML
-- CSS
-- JavaScript
-- Neutralino.js
+- 💸 Track expenses with category-wise organization  
+- 📊 Smart budget planner with usable balance and reserve tracking  
+- 🔮 Restock planner with upcoming expense forecasting  
+- 🧠 Intelligent insights based on spending patterns  
+- 🌙 Seamless light and dark mode experience  
 
 ---
 
@@ -44,6 +24,33 @@ it helps you **plan future spending**.
   <img src="resources/assets/screenshots/dark-mode.png" width="250"/>
 </p>
 
-## 👩‍💻 Author
+---
 
-Ananya Sinha
+## 🧠 Smart Insights Engine
+
+SpendSmart tracks spending timestamps and category frequency to detect patterns over time.
+
+It can:
+- ⚠️ Detect overspending behavior  
+- 📊 Identify your highest spending category  
+- 🛒 Recognize frequent spending habits  
+
+All insights are generated purely on the client side without using any backend or external APIs.
+
+This approach demonstrates how meaningful insights can be generated using simple algorithms without relying on heavy AI models.
+
+---
+
+## 🛠 Tech Stack
+
+- HTML, CSS, JavaScript  
+- LocalStorage for persistence  
+- Neutralino.js (lightweight desktop app framework)  
+
+---
+
+## 🎯 Future Scope
+
+- ML-based spending prediction using historical data  
+- Cloud sync with user accounts  
+- Mobile companion app  
