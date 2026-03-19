@@ -2,6 +2,8 @@
 
 An intelligent, privacy-first expense tracker that analyzes your spending behavior without any backend or APIs.
 
+Built as part of my journey into open-source and system design, this project focuses on making financial tracking simple yet insightful.
+
 ---
 
 ## 🚀 Features
@@ -54,3 +56,11 @@ This approach demonstrates how meaningful insights can be generated using simple
 - ML-based spending prediction using historical data  
 - Cloud sync with user accounts  
 - Mobile companion app  
+
+---
+
+## 💭 Why I Built This
+
+I wanted to explore how much intelligence can be added to a simple expense tracker without using heavy backend systems or APIs.
+
+This project reflects my interest in building efficient, lightweight, and user-focused applications.
