@@ -55,7 +55,7 @@ This approach demonstrates how meaningful insights can be generated using simple
 
 SpendSmart is a desktop app built with Neutralino.js.
 
-**Requirements:** [Node.js](https://nodejs.org) installed.
+**Requirements:** [Node.js](https://nodejs.org) and Git installed.
 
 1. Clone the repository
    ```bash
@@ -66,7 +66,8 @@ SpendSmart is a desktop app built with Neutralino.js.
    ```bash
    npm install -g @neutralinojs/neu
    ```
-3. Download the Neutralino binaries
+   If you get a permission error on Mac/Linux, use `sudo npm install -g @neutralinojs/neu`.
+3. Download the Neutralino binaries (only needed once)
    ```bash
    neu update
    ```
@@ -76,7 +77,6 @@ SpendSmart is a desktop app built with Neutralino.js.
    ```
 
 All data is saved locally on your device using LocalStorage.
-
 ___
 
 
