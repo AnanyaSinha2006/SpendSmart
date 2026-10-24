@@ -51,6 +51,35 @@ This approach demonstrates how meaningful insights can be generated using simple
 
 ---
 
+## ▶️ How to Run
+
+SpendSmart is a desktop app built with Neutralino.js.
+
+**Requirements:** [Node.js](https://nodejs.org) installed.
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/AnanyaSinha2006/SpendSmart.git
+   cd SpendSmart
+   ```
+2. Install the Neutralino CLI
+   ```bash
+   npm install -g @neutralinojs/neu
+   ```
+3. Download the Neutralino binaries
+   ```bash
+   neu update
+   ```
+4. Run the app
+   ```bash
+   neu run
+   ```
+
+All data is saved locally on your device using LocalStorage.
+
+___
+
+
 ## 🎯 Future Scope
 
 - ML-based spending prediction using historical data  
